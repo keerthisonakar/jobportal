@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import connectdb from "./db/dbconnect.js";
 import userrouter from'./router/userroutes.js';
 import jobrouter from './router/jobsroutes.js';
+import jobapplicationroutes from './router/jobapplicationroutes.js'
+
 import cors from "cors";
 const app = express();
 dotenv.config();
@@ -21,7 +23,7 @@ app.get('/api/home',(req,res)=>{
 //Routers
 app.use('/api',userrouter)
 app.use('/api',jobrouter)
-
+app.use('/api',jobapplicationroutes)
 let port=process.env.port ||5051;
     app.listen(port,()=>{
 
