@@ -5,7 +5,7 @@ import {deleteuser, forgotpassword, getallusers, login, register, updateuser} fr
 
 router.post('/register',register);
 router.post('/login',login);
-router.get('/getalluser',getallusers);
+router.get('/getusers',getallusers);
 router.put('/updateuser/:id',updateuser)
 router.patch('/forgotpassword/:id',forgotpassword);
 router.delete('/deleteuser/:id',deleteuser)

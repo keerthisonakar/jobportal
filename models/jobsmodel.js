@@ -42,6 +42,10 @@ const jobschema = new mongoose.Schema({
         required: true 
     },
     requiredskills: [],
+    applyLink: {
+        type: String,
+        required: true
+    },
     userid:{type:mongoose.Schema.Types.ObjectId,ref:"users"},
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }

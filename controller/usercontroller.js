@@ -1,7 +1,7 @@
+
 import usermodel from '../models/usermodel.js';
-import bcrypt from 'bcryptjs'
-
-
+import bcrypt, { hash } from 'bcryptjs'
+import nodemailer from 'nodemailer';
 export const register=async(req,res)=>{
     try {
         const {username,email,password}=req.body;
@@ -10,11 +10,34 @@ export const register=async(req,res)=>{
             return res.status(400).json({error:'email,username and password are required'});
         }
         const userexist=await usermodel.findOne({email});
-
+        
         if(userexist){
             return res.status(400).json({error:'user already exist'});
         }
         req.body.password=await bcrypt.hash(password,10);
+        try {
+                    let transporter=nodemailer.createTransport({
+                        service:'gmail',
+                        auth:{
+                            user:'ambalekeerti@gmail.com',
+                            pass:'fkvf tfab zuya hktx'    
+                        }
+                    })
+        
+                    let mailinfo={
+                        from:'ambalekeerti@gmail.com',
+                        to:'sonakarkeerti3@gmail.com',
+                        subject:`register ${req.body.username}`,
+                        html:`
+                        <h1 style="color:red">hi man, you successfully registed Aishu job portal appiction and your username is ${req.body.username},your mail is ${req.body.email}</h1>
+                        
+                        `
+                    }
+        
+                    await transporter.sendMail(mailinfo);
+                } catch (error) {
+                    return res.status(500).json({error:'internal server error failed to sent mail'+error.message});
+                }
         let newuser=new usermodel(req.body);
         await newuser.save();
         return res.status(200).json({message:"user registered successfully",user:newuser});
@@ -26,8 +49,9 @@ export const register=async(req,res)=>{
 
 export const login=async(req,res)=>{
     try {
-        
+        //step 1:read email and password
         const {email,password}=req.body;
+        //step 2:check if email,password given or not using if statement
         if(!email || !password){
             return res.status(400).json({error:'email and password are required'});
         }
@@ -37,10 +61,18 @@ export const login=async(req,res)=>{
         //if we are getting null means user not exist may be email is wrong  (!user)-->true
         //if user exist we will {username,email,password...}.  --false
         if(!user){
-            
 
            return res.status(400).json({error:'user not found'});
         }
+
+        //step 4:check password
+        const ispasswordmatched=await bcrypt.compare(password,user.password);
+        if(!ispasswordmatched){
+            return res.status(400).json({error:'password not matched'});
+        }
+        return res.status(200).json({message:"user logged in successfully",user:user});
+
+        
     } catch (error) {
         return res.status(500).json({error:'internal server error'+error.message});
     }

@@ -11,6 +11,7 @@ dotenv.config();
 connectdb();
 
 //MIDDLEWARES
+app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
@@ -25,7 +26,7 @@ app.use('/api',userrouter)
 app.use('/api',jobrouter)
 app.use('/api',jobapplicationroutes)
 let port=process.env.port ||5051;
-    app.listen(port,()=>{
+app.listen(port,()=>{
 
     console.log(`server running on http://localhost:${port}`);
 });
